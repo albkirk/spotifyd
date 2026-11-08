@@ -1,0 +1,20 @@
+# System service for spotifyd on Raspberry Pi Zero (ARMv6, ALSA).
+# Install as root: cp contrib/spotifyd-armv6.service /etc/systemd/system/
+# Run as a system service so it survives SSH logout; the daemon can exit after
+# transient Spotify connection errors, so a generous restart burst matters on
+# flaky WiFi.
+[Unit]
+Description=A spotify playing daemon
+Documentation=https://github.com/Spotifyd/spotifyd
+Wants=sound.target network-online.target
+After=sound.target network-online.target
+StartLimitIntervalSec=600
+StartLimitBurst=30
+
+[Service]
+ExecStart=/home/pi/spotifyd --no-daemon
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
